@@ -1,45 +1,85 @@
-## Package Status
+# About
 
-| Bintray | Windows | Linux & macOS | 
-|:--------:|:---------:|:-----------------:|
-|[![Download](https://api.bintray.com/packages/bincrafters/public-conan/folly%3Abincrafters/images/download.svg)](https://bintray.com/bincrafters/public-conan/folly%3Abincrafters/_latestVersion)|[![Build status](https://ci.appveyor.com/api/projects/status/github/bincrafters/conan-folly?svg=true)](https://ci.appveyor.com/project/BinCrafters/conan-folly)|[![Build Status](https://travis-ci.com/bincrafters/conan-folly.svg?)](https://travis-ci.com/bincrafters/conan-folly)|
+folly patched to support clang, fixes https://github.com/facebook/folly/issues/976
 
-## Conan.io Information
+NOTE: required cmake definitions:
 
-Bincrafters packages can be found in the following public Conan repository:
+```bash
+cmake.definitions["BUILD_STATIC_LIBS"]="ON"
+cmake.definitions["BUILD_SHARED_LIBS"]="OFF"
+cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"]="ON"
+cmake.definitions["FOLLY_USE_JEMALLOC"]="OFF"
+```
 
-[Bincrafters Public Conan Repository on Bintray](https://bintray.com/bincrafters/public-conan)
+Based on https://github.com/bincrafters/conan-folly/blob/testing/2019.09.02/build.py
 
-*Note: You can click the "Set Me Up" button on the Bintray page above for instructions on using packages from this repository.*
+## Docker build with `--no-cache`
 
-## Issues
+```bash
+export MY_IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
+sudo -E docker build \
+    --build-arg PKG_NAME=clang_folly_conan/v2019.01.14.00 \
+    --build-arg PKG_CHANNEL=conan/stable \
+    --build-arg PKG_UPLOAD_NAME=clang_folly_conan/v2019.01.14.00@conan/stable \
+    --build-arg CONAN_EXTRA_REPOS="conan-local http://$MY_IP:8081/artifactory/api/conan/conan False" \
+    --build-arg CONAN_EXTRA_REPOS_USER="user -p password1 -r conan-local admin" \
+    --build-arg CONAN_UPLOAD="conan upload --all -r=conan-local -c --retry 3 --retry-wait 10 --force" \
+    --build-arg BUILD_TYPE=Debug \
+    -f clang_folly_conan_source.Dockerfile --tag clang_folly_conan_repoadd_source_install . --no-cache
 
-If you wish to report an issue or make a request for a Bincrafters package, please do so here:
+sudo -E docker build \
+    --build-arg PKG_NAME=clang_folly_conan/v2019.01.14.00 \
+    --build-arg PKG_CHANNEL=conan/stable \
+    --build-arg PKG_UPLOAD_NAME=clang_folly_conan/v2019.01.14.00@conan/stable \
+    --build-arg CONAN_EXTRA_REPOS="conan-local http://$MY_IP:8081/artifactory/api/conan/conan False" \
+    --build-arg CONAN_EXTRA_REPOS_USER="user -p password1 -r conan-local admin" \
+    --build-arg CONAN_UPLOAD="conan upload --all -r=conan-local -c --retry 3 --retry-wait 10 --force" \
+    --build-arg BUILD_TYPE=Debug \
+    -f clang_folly_conan_build.Dockerfile --tag clang_folly_conan_build_package_export_test_upload . --no-cache
 
-[Bincrafters Community Issues](https://github.com/bincrafters/community/issues)
+# OPTIONAL: clear unused data
+sudo -E docker rmi clang_folly_conan_*
+```
 
-## General Information
+## How to run single command in container using bash with gdb support
 
-This GIT repository is managed by the Bincrafters team and holds files related to Conan.io.  For detailed information about Bincrafters and Conan.io, please visit the following resources:
+```bash
+# about gdb support https://stackoverflow.com/a/46676907
+docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined --rm --entrypoint="/bin/bash" -v "$PWD":/home/u/project_copy -w /home/u/project_copy -p 50051:50051 --name DEV_clang_folly_conan clang_folly_conan -c pwd
+```
 
-[Bincrafters Wiki - Common README](https://github.com/bincrafters/community/wiki/Common-README.md)
+## Local build
 
-[Bincrafters Technical Documentation](http://bincrafters.readthedocs.io/en/latest/)
+```bash
+export CC=clang-6.0
+export CXX=clang++-6.0
 
-[Bincrafters Blog](https://bincrafters.github.io)
+$CC --version
+$CXX --version
 
-## License Information
+conan remote add conan-center https://api.bintray.com/conan/conan/conan-center False
 
-Bincrafters packages are hosted on [Bintray](https://bintray.com) and contain Open-Source software which is licensed by the software's maintainers and NOT Bincrafters.  For each Open-Source package published by Bincrafters, the packaging process obtains the required license files along with the original source files from the maintainer, and includes these license files in the generated Conan packages.
+export PKG_NAME=clang_folly_conan/v2019.01.14.00@conan/stable
 
-The contents of this GIT repository are completely separate from the software being packaged and therefor licensed separately.  The license for all files contained in this GIT repository are defined in the [LICENSE.md](LICENSE.md) file in this repository.  The licenses included with all Conan packages published by Bincrafters can be found in the Conan package directories in the following locations, relative to the Conan Cache root (`~/.conan` by default):
+CONAN_REVISIONS_ENABLED=1 \
+    conan remove $PKG_NAME
+
+CONAN_REVISIONS_ENABLED=1 \
+    CONAN_VERBOSE_TRACEBACK=1 \
+    CONAN_PRINT_RUN_COMMANDS=1 \
+    CONAN_LOGGING_LEVEL=10 \
+    GIT_SSL_NO_VERIFY=true \
+    conan create . conan/stable -s build_type=Debug --verify=False --profile clang --build missing
+
+CONAN_REVISIONS_ENABLED=1 \
+    CONAN_VERBOSE_TRACEBACK=1 \
+    CONAN_PRINT_RUN_COMMANDS=1 \
+    CONAN_LOGGING_LEVEL=10 \
+    conan upload $PKG_NAME --all -r=conan-local -c --retry 3 --retry-wait 10 --force
+```
 
 ### License(s) for packaged software:
 
     ~/.conan/data/<pkg_name>/<pkg_version>/bincrafters/package/<random_package_id>/license/<LICENSE_FILES_HERE>
 
 *Note :   The most common filenames for OSS licenses are `LICENSE` AND `COPYING` without file extensions.*
-
-### License for Bincrafters recipe:
-
-    ~/.conan/data/<pkg_name>/<pkg_version>/bincrafters/export/LICENSE.md
