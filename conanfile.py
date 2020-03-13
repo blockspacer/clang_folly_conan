@@ -120,6 +120,10 @@ class FollyConan(ConanFile):
         cmake.definitions["BUILD_SHARED_LIBS"]="OFF"
         cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"]="ON"
         cmake.definitions["FOLLY_USE_JEMALLOC"]="OFF"
+        cmake.definitions["CMAKE_CXX_FLAGS"]="-Wno-error=unused-parameter"
+        cmake.definitions["FOLLY_CXX_FLAGS"]="-Wno-error=unused-parameter"
+        cmake.definitions["BUILD_TESTS"]="OFF"
+        cmake.definitions["USE_CMAKE_GOOGLE_TEST_INTEGRATION"]="OFF"
 
         cmake.configure()
         return cmake

@@ -5,10 +5,14 @@ folly patched to support clang, fixes https://github.com/facebook/folly/issues/9
 NOTE: required cmake definitions:
 
 ```bash
-cmake.definitions["BUILD_STATIC_LIBS"]="ON"
-cmake.definitions["BUILD_SHARED_LIBS"]="OFF"
-cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"]="ON"
-cmake.definitions["FOLLY_USE_JEMALLOC"]="OFF"
+        cmake.definitions["BUILD_STATIC_LIBS"]="ON"
+        cmake.definitions["BUILD_SHARED_LIBS"]="OFF"
+        cmake.definitions["CMAKE_POSITION_INDEPENDENT_CODE"]="ON"
+        cmake.definitions["FOLLY_USE_JEMALLOC"]="OFF"
+        cmake.definitions["CMAKE_CXX_FLAGS"]="-Wno-error=unused-parameter"
+        cmake.definitions["FOLLY_CXX_FLAGS"]="-Wno-error=unused-parameter"
+        cmake.definitions["BUILD_TESTS"]="OFF"
+        cmake.definitions["USE_CMAKE_GOOGLE_TEST_INTEGRATION"]="OFF"
 ```
 
 Based on https://github.com/bincrafters/conan-folly/blob/testing/2019.09.02/build.py
@@ -69,7 +73,7 @@ CONAN_REVISIONS_ENABLED=1 \
     CONAN_PRINT_RUN_COMMANDS=1 \
     CONAN_LOGGING_LEVEL=10 \
     GIT_SSL_NO_VERIFY=true \
-    conan create . conan/stable -s build_type=Debug --verify=False --profile clang --build missing
+    conan create . conan/stable -s build_type=Debug --profile clang --build missing
 
 CONAN_REVISIONS_ENABLED=1 \
     CONAN_VERBOSE_TRACEBACK=1 \

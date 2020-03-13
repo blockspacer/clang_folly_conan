@@ -73,7 +73,6 @@
 #include <folly/json.h>
 //#include <folly/experimental/TimerFDTimeoutManager.h>
 //#include <folly/experimental/STTimerFDTimeoutManager.h>
-#include <folly/io/async/test/Util.h>
 //#include <folly/experimental/STTimerFDTimeoutManager.h>
 //#include <folly/experimental/TimerFDTimeoutManager.h>
 #include <folly/io/async/test/UndelayedDestruction.h>
