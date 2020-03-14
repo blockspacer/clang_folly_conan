@@ -65,8 +65,8 @@ conan remote add conan-center https://api.bintray.com/conan/conan/conan-center F
 
 export PKG_NAME=clang_folly_conan/v2019.01.14.00@conan/stable
 
-CONAN_REVISIONS_ENABLED=1 \
-    conan remove $PKG_NAME
+(CONAN_REVISIONS_ENABLED=1 \
+    conan remove --force $PKG_NAME || true)
 
 CONAN_REVISIONS_ENABLED=1 \
     CONAN_VERBOSE_TRACEBACK=1 \
