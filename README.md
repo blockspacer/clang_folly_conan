@@ -73,7 +73,7 @@ CONAN_REVISIONS_ENABLED=1 \
     CONAN_PRINT_RUN_COMMANDS=1 \
     CONAN_LOGGING_LEVEL=10 \
     GIT_SSL_NO_VERIFY=true \
-    conan create . conan/stable -s build_type=Debug --profile clang --build missing
+    conan create . conan/stable -s build_type=Debug --profile clang --build missing -o openssl:shared=True
 
 CONAN_REVISIONS_ENABLED=1 \
     CONAN_VERBOSE_TRACEBACK=1 \
