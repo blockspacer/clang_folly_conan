@@ -73,24 +73,24 @@ target_link_libraries(${PROJECT_NAME}
     LIBM::LIBM
     Threads::Threads
     #
-    CONAN_PKG::clang_folly_conan 
-    CONAN_PKG::boost 
-    CONAN_PKG::double-conversion 
-    CONAN_PKG::glog 
-    CONAN_PKG::libevent 
-    CONAN_PKG::lz4 
-    CONAN_PKG::openssl 
-    CONAN_PKG::lzma 
-    CONAN_PKG::zstd 
-    CONAN_PKG::snappy 
-    CONAN_PKG::libsodium 
-    CONAN_PKG::libdwarf 
-    CONAN_PKG::bzip2 
-    CONAN_PKG::gflags 
-    CONAN_PKG::libunwind 
-    CONAN_PKG::OpenSSL 
-    CONAN_PKG::libelf 
-    CONAN_PKG::zlib 
+    CONAN_PKG::clang_folly_conan
+    CONAN_PKG::boost
+    CONAN_PKG::double-conversion
+    CONAN_PKG::glog
+    CONAN_PKG::libevent
+    CONAN_PKG::lz4
+    CONAN_PKG::openssl
+    CONAN_PKG::lzma
+    CONAN_PKG::zstd
+    CONAN_PKG::snappy
+    CONAN_PKG::libsodium
+    CONAN_PKG::libdwarf
+    CONAN_PKG::bzip2
+    CONAN_PKG::gflags
+    CONAN_PKG::libunwind
+    #CONAN_PKG::OpenSSL
+    CONAN_PKG::libelf
+    CONAN_PKG::zlib
     CONAN_PKG::xz_utils
 )
 
