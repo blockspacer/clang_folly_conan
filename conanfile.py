@@ -68,10 +68,10 @@ class FollyConan(ConanFile):
         compiler_version = Version(self.settings.compiler.version.value)
 
         # NOTE: our patched folly version requires clang
-        if self.settings.compiler != "apple-clang" and \
-             self.settings.compiler != "clang" and \
-             self.settings.compiler != "clang-cl":
-            raise ConanInvalidConfiguration("Use clang")
+        #if self.settings.compiler != "apple-clang" and \
+        #     self.settings.compiler != "clang" and \
+        #     self.settings.compiler != "clang-cl":
+        #    raise ConanInvalidConfiguration("Use clang")
 
         if self.settings.os == "Windows" and \
             self.settings.compiler == "Visual Studio" and \
@@ -101,10 +101,10 @@ class FollyConan(ConanFile):
         print('self.settings.compiler {}'.format(self.settings.compiler))
 
         # NOTE: our patched folly version requires clang
-        if self.settings.compiler != "apple-clang" and \
-             self.settings.compiler != "clang" and \
-             self.settings.compiler != "clang-cl":
-            raise ConanInvalidConfiguration("Use clang")
+        #if self.settings.compiler != "apple-clang" and \
+        #     self.settings.compiler != "clang" and \
+        #     self.settings.compiler != "clang-cl":
+        #    raise ConanInvalidConfiguration("Use clang")
 
         if self.settings.os == "Linux" and \
            self.settings.compiler == "gcc":
