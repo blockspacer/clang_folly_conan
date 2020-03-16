@@ -22,7 +22,8 @@ class FollyConan(ConanFile):
 
     # conan search double-conversion* -r=conan-center
     requires = (
-        "boost/1.71.0@conan/stable",
+        # patched to support "zlib/v1.2.11@conan/stable" with "openssl/OpenSSL_1_1_1-stable@conan/stable"
+        "boost/1.71.0@dev/stable",
         "double-conversion/3.1.1@bincrafters/stable",
 #        "double-conversion/3.1.5@bincrafters/stable",
         "gflags/2.2.2@bincrafters/stable",

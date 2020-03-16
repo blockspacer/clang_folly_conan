@@ -61,6 +61,9 @@ export CXX=clang++-6.0
 $CC --version
 $CXX --version
 
+# use version from conan
+(sudo apt remove *gflag* || true)
+
 conan remote add conan-center https://api.bintray.com/conan/conan/conan-center False
 
 export PKG_NAME=clang_folly_conan/v2019.01.14.00@conan/stable
