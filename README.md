@@ -22,7 +22,7 @@ Based on https://github.com/bincrafters/conan-folly/blob/testing/2019.09.02/buil
 ```bash
 export MY_IP=$(ip route get 8.8.8.8 | sed -n '/src/{s/.*src *\([^ ]*\).*/\1/p;q}')
 sudo -E docker build \
-    --build-arg PKG_NAME=clang_folly_conan/v2019.01.14.00 \
+    --build-arg PKG_NAME=clang_folly_conan \
     --build-arg PKG_CHANNEL=conan/stable \
     --build-arg PKG_UPLOAD_NAME=clang_folly_conan/v2019.01.14.00@conan/stable \
     --build-arg CONAN_EXTRA_REPOS="conan-local http://$MY_IP:8081/artifactory/api/conan/conan False" \
@@ -32,7 +32,7 @@ sudo -E docker build \
     -f clang_folly_conan_source.Dockerfile --tag clang_folly_conan_repoadd_source_install . --no-cache
 
 sudo -E docker build \
-    --build-arg PKG_NAME=clang_folly_conan/v2019.01.14.00 \
+    --build-arg PKG_NAME=clang_folly_conan \
     --build-arg PKG_CHANNEL=conan/stable \
     --build-arg PKG_UPLOAD_NAME=clang_folly_conan/v2019.01.14.00@conan/stable \
     --build-arg CONAN_EXTRA_REPOS="conan-local http://$MY_IP:8081/artifactory/api/conan/conan False" \
