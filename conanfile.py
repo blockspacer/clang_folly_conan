@@ -13,7 +13,12 @@ class FollyConan(ConanFile):
     #license = "Apache-2.0" # TODO
     settings = "os", "arch", "compiler", "build_type"
     options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    default_options = {
+        "shared": False,
+        "fPIC": True,
+        "*:shared": False,
+        "openssl:shared": True
+    }
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt", "*.patch"]
     generators = "cmake"
