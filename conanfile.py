@@ -45,7 +45,7 @@ class FollyConan(ConanFile):
 #        "zstd/1.4.3",
         "zstd/1.3.8@bincrafters/stable",
         "snappy/1.1.7@bincrafters/stable",
-        "bzip2/1.0.8@conan/stable",
+        "bzip2/1.0.8", # @conan/stable
         "libsodium/1.0.18@bincrafters/stable",
         "libelf/0.8.13@bincrafters/stable",
 #        "xz_utils/5.2.4@conan-center/stable",
