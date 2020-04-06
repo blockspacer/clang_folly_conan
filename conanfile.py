@@ -111,8 +111,10 @@ class FollyConan(ConanFile):
         #     self.settings.compiler != "clang-cl":
         #    raise ConanInvalidConfiguration("Use clang")
 
-        if self.settings.os == "Linux" and \
-           self.settings.compiler == "gcc":
+        #if self.settings.os == "Linux" and \
+        #   self.settings.compiler == "gcc":
+        #    self.requires("libiberty/9.1.0")
+        if self.settings.os == "Linux":
             self.requires("libiberty/9.1.0")
 
     def source(self):
