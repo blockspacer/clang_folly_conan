@@ -5,11 +5,11 @@ index 3b365b3..fc4ae2e 100644
 @@ -6,7 +6,8 @@ include(CheckSymbolExists)
  include(CheckTypeSize)
  include(CheckCXXCompilerFlag)
- 
+
 -CHECK_INCLUDE_FILE_CXX(jemalloc/jemalloc.h FOLLY_USE_JEMALLOC)
 +# NOTE: fixes https://github.com/facebook/folly/issues/1261
 +# CHECK_INCLUDE_FILE_CXX(jemalloc/jemalloc.h FOLLY_USE_JEMALLOC)
- 
+
  if(NOT CMAKE_SYSTEM_NAME STREQUAL "Windows")
    # clang only rejects unknown warning flags if -Werror=unknown-warning-option
 diff --git a/CMake/folly-config.h.cmake b/CMake/folly-config.h.cmake
@@ -17,15 +17,15 @@ index 343bd75..cdfb5a5 100644
 --- a/CMake/folly-config.h.cmake
 +++ b/CMake/folly-config.h.cmake
 @@ -35,7 +35,9 @@
- 
+
  #cmakedefine FOLLY_HAVE_LIBGLOG 1
- 
+
 -#cmakedefine FOLLY_USE_JEMALLOC 1
 +// NOTE: fixes https://github.com/facebook/folly/issues/1261
 +// #cmakedefine FOLLY_USE_JEMALLOC 1
 +
  #cmakedefine FOLLY_USE_LIBSTDCPP 1
- 
+
  #if __has_include(<features.h>)
 diff --git a/CMake/folly-deps.cmake b/CMake/folly-deps.cmake
 index 437c0cd..70e3270 100644
@@ -34,7 +34,7 @@ index 437c0cd..70e3270 100644
 @@ -2,19 +2,17 @@ include(CheckCXXSourceCompiles)
  include(CheckIncludeFileCXX)
  include(CheckFunctionExists)
- 
+
 -find_package(Boost 1.51.0 MODULE
 -  COMPONENTS
 -    context
@@ -48,27 +48,27 @@ index 437c0cd..70e3270 100644
 -  REQUIRED
 -)
 +# NOTE: we use boost from conan
-+find_package( Boost 1.71.0
-+  COMPONENTS program_options filesystem regex date_time system thread graph
-+  EXACT REQUIRED )
 +if(NOT TARGET CONAN_PKG::boost)
 +  message(FATAL_ERROR "Use boost from conan")
 +endif()
++get_target_property(boost_includes CONAN_PKG::boost INTERFACE_INCLUDE_DIRECTORIES)
++set(Boost_LIBRARIES CONAN_PKG::boost)
++set(Boost_INCLUDE_DIRS ${boost_includes})
 +message(STATUS "Boost_LIBRARIES=${Boost_LIBRARIES}")
 +message(STATUS "Boost_INCLUDE_DIRS=${Boost_INCLUDE_DIRS}")
  list(APPEND FOLLY_LINK_LIBRARIES ${Boost_LIBRARIES})
 +# NOTE: make sure that include dirs from conan are used first
  list(APPEND FOLLY_INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIRS})
- 
+
  find_package(DoubleConversion MODULE REQUIRED)
 diff --git a/CMakeLists.txt b/CMakeLists.txt
 index 7ee5003..291bd59 100755
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -23,6 +23,33 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
- 
+
  project(${PACKAGE_NAME} CXX C)
- 
+
 +# --------------------------- conan configuration ------------------------------
 +
 +# Conan package manager List of packages used by the project is container in
