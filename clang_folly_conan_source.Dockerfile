@@ -29,6 +29,7 @@ ARG CONAN_EXTRA_REPOS=""
 # Example: --build-arg CONAN_EXTRA_REPOS_USER="user -p password -r conan-local admin"
 ARG CONAN_EXTRA_REPOS_USER=""
 ARG CONAN_OPTIONS=""
+ARG CLONE_DEPS="True"
 ENV LC_ALL=C.UTF-8 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
@@ -61,6 +62,53 @@ WORKDIR $PROJ_DIR
 RUN set -ex \
   && \
   $APT update \
+  && \
+  if [ "$CLONE_DEPS" = "True" ]; then \
+    (mkdir -p /tmp || true) \
+    && \
+    cd /tmp \
+    && \
+    git clone http://github.com/blockspacer/conan_zlib.git \
+    && \
+    cd conan_zlib \
+    && \
+    conan install . --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    conan create . conan/stable  --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    git clone http://github.com/blockspacer/conan_openssl.git \
+    && \
+    cd conan_openssl \
+    && \
+    conan install . --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    conan create . conan/stable  --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    git clone http://github.com/blockspacer/conan_bzip2.git \
+    && \
+    cd conan_bzip2 \
+    && \
+    conan install . --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    conan create . dev/stable  --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    git clone http://github.com/blockspacer/conan_libevent.git \
+    && \
+    cd conan_libevent \
+    && \
+    conan install . --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    conan create . dev/stable  --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    git clone http://github.com/blockspacer/conan_boost.git \
+    && \
+    cd conan_boost \
+    && \
+    conan install . --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    && \
+    conan create . dev/stable --settings build_type=$BUILD_TYPE $CONAN_OPTIONS \
+    ; \
+  fi \
   && \
   cd $PROJ_DIR \
   && \
