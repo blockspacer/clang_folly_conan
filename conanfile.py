@@ -43,6 +43,7 @@ class FollyConan(ConanFile):
 #        "openssl/1.1.1c",
         "openssl/OpenSSL_1_1_1-stable@conan/stable",
         # patched to support "openssl/OpenSSL_1_1_1-stable@conan/stable"
+        # TODO: use self.requires("chromium_zlib/master@conan/stable")
         "zlib/v1.2.11@conan/stable",
         #"zlib/1.2.11@conan/stable",
         "lzma/5.2.4@bincrafters/stable",
