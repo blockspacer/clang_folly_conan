@@ -27,13 +27,13 @@ class FollyConan(ConanFile):
 
     # conan search double-conversion* -r=conan-center
     requires = (
-        # patched to support "zlib/v1.2.11@conan/stable" with "openssl/OpenSSL_1_1_1-stable@conan/stable"
-        "boost/1.71.0@dev/stable",
+        # patched to support "zlib/v1.2.11@conan/stable" with "openssl/1.1.1-stable@conan/stable"
+        "boost/1.72.0@dev/stable",
         "double-conversion/3.1.1@bincrafters/stable",
 #        "double-conversion/3.1.5@bincrafters/stable",
         "gflags/2.2.2@bincrafters/stable",
         "glog/0.4.0@bincrafters/stable",
-        # patched to support "openssl/OpenSSL_1_1_1-stable@conan/stable"
+        # patched to support "openssl/1.1.1-stable@conan/stable"
         "libevent/2.1.11@dev/stable",
 #        "lz4/1.9.2",
         "lz4/1.8.3@bincrafters/stable",
@@ -41,8 +41,8 @@ class FollyConan(ConanFile):
 #        "openssl/1.0.2u@conan/stable",
 #        "openssl/1.0.2u",
 #        "openssl/1.1.1c",
-        "openssl/OpenSSL_1_1_1-stable@conan/stable",
-        # patched to support "openssl/OpenSSL_1_1_1-stable@conan/stable"
+        "openssl/1.1.1-stable@conan/stable",
+        # patched to support "openssl/1.1.1-stable@conan/stable"
         # TODO: use self.requires("chromium_zlib/master@conan/stable")
         "zlib/v1.2.11@conan/stable",
         #"zlib/1.2.11@conan/stable",
@@ -142,15 +142,17 @@ class FollyConan(ConanFile):
         return cmake
 
     def build(self):
-        #tools.patch(base_path=self._source_subfolder, patch_file='0001-compiler-options.patch')
-        tools.patch(base_path=self._source_subfolder, patch_file='0002-clang-cling-conan-support.patch')
-        cmake = self._configure_cmake()
-        cmake.build()
+        with tools.vcvars(self.settings, only_diff=False): # https://github.com/conan-io/conan/issues/6577
+            #tools.patch(base_path=self._source_subfolder, patch_file='0001-compiler-options.patch')
+            tools.patch(base_path=self._source_subfolder, patch_file='0002-clang-cling-conan-support.patch')
+            cmake = self._configure_cmake()
+            cmake.build()
 
     def package(self):
-        self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
-        cmake = self._configure_cmake()
-        cmake.install()
+        with tools.vcvars(self.settings, only_diff=False): # https://github.com/conan-io/conan/issues/6577
+            self.copy(pattern="LICENSE", dst="licenses", src=self._source_subfolder)
+            cmake = self._configure_cmake()
+            cmake.install()
 
     def package_info(self):
         self.cpp_info.libs = tools.collect_libs(self)
